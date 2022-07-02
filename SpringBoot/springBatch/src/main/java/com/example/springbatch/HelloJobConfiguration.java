@@ -23,27 +23,22 @@ public class HelloJobConfiguration {
 
     @Bean
     public Job helloJob() {
-        return jobBuilderFactory.get("helloJob")
-                .start(helloStep1())
-                .next(helloStep2())
+        return jobBuilderFactory.get("Job")
+                .start(step1())
+                .next(step2())
                 .build();
     }
 
     @Bean
-    public Step helloStep1() {
-        return stepBuilderFactory.get("helloStep1")
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 1");
-                    System.out.println("====================");
-                    return RepeatStatus.FINISHED;
-                })
+    public Step step1() {
+        return stepBuilderFactory.get("step1")
+                .tasklet(new CustomTasklet())
                 .build();
     }
 
     @Bean
-    public Step helloStep2() {
-        return stepBuilderFactory.get("helloStep2")
+    public Step step2() {
+        return stepBuilderFactory.get("step2")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
                     System.out.println("HELLO SPRING BATCH 2");
