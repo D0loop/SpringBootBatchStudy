@@ -24,13 +24,14 @@ public class HelloJobConfiguration {
     @Bean
     public Job helloJob() {
         return jobBuilderFactory.get("helloJob")
-                .start(helloStep1())
-                .next(helloStep2())
+                .start(step1())
+                .next(step2())
+                .next(step3())
                 .build();
     }
 
     @Bean
-    public Step helloStep1() {
+    public Step step1() {
         return stepBuilderFactory.get("helloStep1")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
@@ -42,11 +43,23 @@ public class HelloJobConfiguration {
     }
 
     @Bean
-    public Step helloStep2() {
+    public Step step2() {
         return stepBuilderFactory.get("helloStep2")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
                     System.out.println("HELLO SPRING BATCH 2");
+                    System.out.println("====================");
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+
+    @Bean
+    public Step step3() {
+        return stepBuilderFactory.get("helloStep3")
+                .tasklet((contribution, chunkContext) -> {
+                    System.out.println("====================");
+                    System.out.println("HELLO SPRING BATCH 3");
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
