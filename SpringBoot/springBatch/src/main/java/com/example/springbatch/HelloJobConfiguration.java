@@ -20,36 +20,46 @@ public class HelloJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final ExecutionContextTasklet1 executionContextTasklet1;
+    private final ExecutionContextTasklet2 executionContextTasklet2;
+    private final ExecutionContextTasklet3 executionContextTasklet3;
+    private final ExecutionContextTasklet4 executionContextTasklet4;
 
     @Bean
     public Job helloJob() {
-        return jobBuilderFactory.get("helloJob")
-                .start(helloStep1())
-                .next(helloStep2())
+        return jobBuilderFactory.get("job")
+                .start(step1())
+                .next(step2())
+                .next(step3())
+                .next(step4())
                 .build();
     }
 
     @Bean
-    public Step helloStep1() {
-        return stepBuilderFactory.get("helloStep1")
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 1");
-                    System.out.println("====================");
-                    return RepeatStatus.FINISHED;
-                })
+    public Step step1() {
+        return stepBuilderFactory.get("step1")
+                .tasklet(executionContextTasklet1)
                 .build();
     }
 
     @Bean
-    public Step helloStep2() {
-        return stepBuilderFactory.get("helloStep2")
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 2");
-                    System.out.println("====================");
-                    return RepeatStatus.FINISHED;
-                })
+    public Step step2() {
+        return stepBuilderFactory.get("step2")
+                .tasklet(executionContextTasklet2)
+                .build();
+    }
+
+    @Bean
+    public Step step3() {
+        return stepBuilderFactory.get("step3")
+                .tasklet(executionContextTasklet3)
+                .build();
+    }
+
+    @Bean
+    public Step step4() {
+        return stepBuilderFactory.get("step4")
+                .tasklet(executionContextTasklet4)
                 .build();
     }
 
