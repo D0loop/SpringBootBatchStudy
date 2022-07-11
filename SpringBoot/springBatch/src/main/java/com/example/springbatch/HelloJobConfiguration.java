@@ -2,10 +2,12 @@ package com.example.springbatch;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.boot.autoconfigure.batch.BasicBatchConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,12 +22,14 @@ public class HelloJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final JobExecutionListener jobExecutionListener;
 
     @Bean
     public Job helloJob() {
         return jobBuilderFactory.get("helloJob")
                 .start(helloStep1())
                 .next(helloStep2())
+                .listener(jobExecutionListener)
                 .build();
     }
 
