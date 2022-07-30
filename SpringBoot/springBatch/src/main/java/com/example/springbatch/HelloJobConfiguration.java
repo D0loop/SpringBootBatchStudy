@@ -5,6 +5,8 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.FlowBuilder;
+import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,15 @@ public class HelloJobConfiguration {
         return jobBuilderFactory.get("helloJob")
                 .start(helloStep1())
                 .next(helloStep2())
+                .build();
+    }
+
+    @Bean
+    public Job helloFlowJob() {
+        return jobBuilderFactory.get("helloFlowJob")
+                .start(flow())
+                .next(helloStep5())
+                .end()
                 .build();
     }
 
@@ -53,4 +64,48 @@ public class HelloJobConfiguration {
                 .build();
     }
 
+    @Bean
+    public Flow flow() {
+        FlowBuilder<Flow> flowFlowBuilder = new FlowBuilder<>("flowName");
+        flowFlowBuilder.start(helloStep3())
+                .next(helloStep4())
+                .end();
+
+        return flowFlowBuilder.build();
+    }
+
+    @Bean
+    public Step helloStep3() {
+        return stepBuilderFactory.get("helloStep3")
+                .tasklet((contribution, chunkContext) -> {
+                    System.out.println("====================");
+                    System.out.println("HELLO SPRING BATCH 3");
+                    System.out.println("====================");
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+
+    @Bean
+    public Step helloStep4() {
+        return stepBuilderFactory.get("helloStep4")
+                .tasklet((contribution, chunkContext) -> {
+                    System.out.println("====================");
+                    System.out.println("HELLO SPRING BATCH 4");
+                    System.out.println("====================");
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+    @Bean
+    public Step helloStep5() {
+        return stepBuilderFactory.get("helloStep5")
+                .tasklet((contribution, chunkContext) -> {
+                    System.out.println("====================");
+                    System.out.println("HELLO SPRING BATCH 5");
+                    System.out.println("====================");
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
 }
