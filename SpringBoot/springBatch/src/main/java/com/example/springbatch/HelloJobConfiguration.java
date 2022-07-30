@@ -47,6 +47,7 @@ public class HelloJobConfiguration {
                     System.out.println("====================");
                     System.out.println("HELLO SPRING BATCH 1");
                     System.out.println("====================");
+                    Thread.sleep(3000);
                     return RepeatStatus.FINISHED;
                 })
                 .build();
