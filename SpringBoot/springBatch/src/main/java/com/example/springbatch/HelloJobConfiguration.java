@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
@@ -27,25 +28,8 @@ public class HelloJobConfiguration {
                 .start(helloStep1())
                 .next(helloStep2())
                 .next(helloStep3())
-                .incrementer(new RunIdIncrementer())
-                .validator(new JobParametersValidator() {
-                    @Override
-                    public void validate(JobParameters jobParameters) throws JobParametersInvalidException {
-
-                    }
-                })
-                .preventRestart()
-                .listener(new JobExecutionListener() {
-                    @Override
-                    public void beforeJob(JobExecution jobExecution) {
-
-                    }
-
-                    @Override
-                    public void afterJob(JobExecution jobExecution) {
-
-                    }
-                })
+//                .validator(new DefaultJobParametersValidator(new String[]{"name"}, new String[]{"requestDate"}))
+                .validator(new CustomJobParametersValidator())
                 .build();
     }
 
