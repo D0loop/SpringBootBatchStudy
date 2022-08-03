@@ -28,8 +28,7 @@ public class HelloJobConfiguration {
                 .start(helloStep1())
                 .next(helloStep2())
                 .next(helloStep3())
-//                .validator(new DefaultJobParametersValidator(new String[]{"name"}, new String[]{"requestDate"}))
-                .validator(new CustomJobParametersValidator())
+                .preventRestart()
                 .build();
     }
 
@@ -61,13 +60,11 @@ public class HelloJobConfiguration {
     public Step helloStep3() {
         return stepBuilderFactory.get("helloStep3")
                 .tasklet((contribution, chunkContext) -> {
-                    chunkContext.getStepContext().getStepExecution().setStatus(BatchStatus.FAILED);
-                    contribution.setExitStatus(ExitStatus.STOPPED);
-
                     System.out.println("====================");
                     System.out.println("HELLO SPRING BATCH 3");
                     System.out.println("====================");
-                    return RepeatStatus.FINISHED;
+
+                    throw new RuntimeException("Step 3 was failed");
                 })
                 .build();
     }
