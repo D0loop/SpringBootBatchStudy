@@ -28,7 +28,8 @@ public class HelloJobConfiguration {
                 .start(helloStep1())
                 .next(helloStep2())
                 .next(helloStep3())
-                .preventRestart()
+//                .incrementer(new RunIdIncrementer())
+                .incrementer(new CustomJobParametersIncrementer())
                 .build();
     }
 
@@ -63,8 +64,7 @@ public class HelloJobConfiguration {
                     System.out.println("====================");
                     System.out.println("HELLO SPRING BATCH 3");
                     System.out.println("====================");
-
-                    throw new RuntimeException("Step 3 was failed");
+                    return RepeatStatus.FINISHED;
                 })
                 .build();
     }
