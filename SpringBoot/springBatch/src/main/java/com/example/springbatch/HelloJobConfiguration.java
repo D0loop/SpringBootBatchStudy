@@ -7,8 +7,12 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.boot.autoconfigure.batch.BasicBatchConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author D0Loop
@@ -21,6 +25,7 @@ public class HelloJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final JobExecutionListener jobExecutionListener;
 
     @Bean
     public Job helloJob() {
@@ -38,7 +43,7 @@ public class HelloJobConfiguration {
         return stepBuilderFactory.get("helloStep1")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 1");
+                    System.out.println("RUN SPRING BATCH 1");
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
@@ -47,16 +52,16 @@ public class HelloJobConfiguration {
 
     @Bean
     public Step helloStep2() {
-        return stepBuilderFactory.get("helloStep2")
+        return stepBuilderFactory.get("helloStep1")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 2");
+                    System.out.println("RUN SPRING BATCH 2");
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
                 .build();
     }
-
+    
     @Bean
     public Step helloStep3() {
         return stepBuilderFactory.get("helloStep3")
