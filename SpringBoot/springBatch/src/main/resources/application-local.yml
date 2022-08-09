@@ -10,4 +10,7 @@ spring:
       driver-class-name: org.h2.Driver
   batch:
     jdbc:
-      initialize-schema: embedded
+      initialize-schema: always
+    job:
+      names: ${job.name:NONE} # --job.name=job1,job2 와 같이 외부에서 실행할 배치job을 인자로 전달
+      enabled: true # 기본적으로 SpringBootBatch는 true로 설정되어 job을 자동수행한다.
