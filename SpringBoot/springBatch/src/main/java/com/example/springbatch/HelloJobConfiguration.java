@@ -73,6 +73,7 @@ public class HelloJobConfiguration {
                     }
                 })
                 .build();
+        
     }
 
     @Bean
