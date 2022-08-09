@@ -5,9 +5,15 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author D0Loop
@@ -24,17 +30,17 @@ public class HelloJobConfiguration {
     @Bean
     public Job helloJob() {
         return jobBuilderFactory.get("helloJob")
-                .start(helloStep1())
-                .next(helloStep2())
+//                .start(taskStep())
+                .start(chunkStep())
                 .build();
     }
 
     @Bean
-    public Step helloStep1() {
-        return stepBuilderFactory.get("helloStep1")
+    public Step taskStep() {
+        return stepBuilderFactory.get("taskStep")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 1");
+                    System.out.println("HELLO TASK STEP");
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
@@ -42,15 +48,27 @@ public class HelloJobConfiguration {
     }
 
     @Bean
-    public Step helloStep2() {
-        return stepBuilderFactory.get("helloStep2")
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 2");
-                    System.out.println("====================");
-                    return RepeatStatus.FINISHED;
+    public Step chunkStep() {
+        return stepBuilderFactory.get("chunkStep")
+                .<String, String> chunk(10)
+                .reader(new ListItemReader<>(Arrays.asList("item1", "item2", "item3", "item4", "item5")))
+                .processor(new ItemProcessor<String, String>() {
+                    @Override
+                    public String process(String s) throws Exception {
+
+                        System.out.println("====================");
+                        System.out.println("HELLO CHUNK STEP");
+                        System.out.println("====================");
+
+                        return s.toUpperCase();
+                    }
+                })
+                .writer(new ItemWriter<String>() {
+                    @Override
+                    public void write(List<? extends String> list) throws Exception {
+                        list.forEach(System.out::println);
+                    }
                 })
                 .build();
     }
-
 }
