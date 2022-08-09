@@ -33,7 +33,7 @@ public class HelloJobConfiguration {
 
     @Bean
     public Job job() {
-        return jobBuilderFactory.get("job")
+        return jobBuilderFactory.get("helloJob")
                 .start(step1())
                 .next(step2())
                 .build();
@@ -41,7 +41,7 @@ public class HelloJobConfiguration {
 
     @Bean
     public Step step1() {
-        return stepBuilderFactory.get("step1")
+        return stepBuilderFactory.get("Step1")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
                     System.out.println("RUN SPRING BATCH 1");
@@ -53,7 +53,7 @@ public class HelloJobConfiguration {
 
     @Bean
     public Step step2() {
-        return stepBuilderFactory.get("step2")
+        return stepBuilderFactory.get("Step2")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
                     System.out.println("RUN SPRING BATCH 2");
