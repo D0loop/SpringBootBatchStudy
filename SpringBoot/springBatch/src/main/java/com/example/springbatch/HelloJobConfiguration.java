@@ -7,6 +7,9 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +28,10 @@ public class HelloJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final ExecutionContextTasklet1 executionContextTasklet1;
+    private final ExecutionContextTasklet2 executionContextTasklet2;
+    private final ExecutionContextTasklet3 executionContextTasklet3;
+    private final ExecutionContextTasklet4 executionContextTasklet4;
 
     @Bean
     public Job job() {
@@ -51,6 +58,7 @@ public class HelloJobConfiguration {
                     System.out.println("HELLO SPRING BATCH 1");
                     System.out.println(name + ", " + seq + ", " + date + ", " + age);
                     jobParameters1.forEach((key, value) -> System.out.println(key + " = " + value));
+
                     System.out.println("====================");
 
                     return RepeatStatus.FINISHED;
@@ -63,11 +71,10 @@ public class HelloJobConfiguration {
         return stepBuilderFactory.get("step2")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 2");
+                    System.out.println("RUN SPRING BATCH 2");
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
                 .build();
     }
-
 }
