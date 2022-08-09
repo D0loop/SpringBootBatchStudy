@@ -32,41 +32,22 @@ public class HelloJobConfiguration {
 
     @Bean
     public Job helloJob() {
-        return jobBuilderFactory.get("helloJob")
-                .start(helloStep1())
-                .next(helloStep2())
-                .listener(jobExecutionListener)
+        return jobBuilderFactory.get("Job")
+                .start(step1())
+                .next(step2())
                 .build();
     }
 
     @Bean
     public Step step1() {
-        return stepBuilderFactory.get("helloStep1")
-                .tasklet((contribution, chunkContext) -> {
-                    JobParameters jobParameters = contribution.getStepExecution().getJobExecution().getJobParameters();
-
-                    String name = jobParameters.getString("name");
-                    Long seq = jobParameters.getLong("seq");
-                    Date date = jobParameters.getDate("date");
-                    Double age = jobParameters.getDouble("age");
-
-                    Map<String, Object> jobParameters1 = chunkContext.getStepContext().getJobParameters();
-
-                    System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 1");
-                    System.out.println(name + ", " + seq + ", " + date + ", " + age);
-                    jobParameters1.forEach((key, value) -> System.out.println(key + " = " + value));
-
-                    System.out.println("====================");
-
-                    return RepeatStatus.FINISHED;
-                })
+        return stepBuilderFactory.get("step1")
+                .tasklet(new CustomTasklet())
                 .build();
     }
 
     @Bean
     public Step step2() {
-        return stepBuilderFactory.get("helloStep2")
+        return stepBuilderFactory.get("step2")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
                     System.out.println("RUN SPRING BATCH 2");
