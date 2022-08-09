@@ -6,10 +6,16 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.boot.autoconfigure.batch.BasicBatchConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author D0Loop
@@ -34,11 +40,36 @@ public class HelloJobConfiguration {
     }
 
     @Bean
-    public Step helloStep1() {
+    public Step step1() {
         return stepBuilderFactory.get("helloStep1")
                 .tasklet((contribution, chunkContext) -> {
+                    JobParameters jobParameters = contribution.getStepExecution().getJobExecution().getJobParameters();
+
+                    String name = jobParameters.getString("name");
+                    Long seq = jobParameters.getLong("seq");
+                    Date date = jobParameters.getDate("date");
+                    Double age = jobParameters.getDouble("age");
+
+                    Map<String, Object> jobParameters1 = chunkContext.getStepContext().getJobParameters();
+
                     System.out.println("====================");
                     System.out.println("HELLO SPRING BATCH 1");
+                    System.out.println(name + ", " + seq + ", " + date + ", " + age);
+                    jobParameters1.forEach((key, value) -> System.out.println(key + " = " + value));
+
+                    System.out.println("====================");
+
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+
+    @Bean
+    public Step step2() {
+        return stepBuilderFactory.get("helloStep2")
+                .tasklet((contribution, chunkContext) -> {
+                    System.out.println("====================");
+                    System.out.println("RUN SPRING BATCH 2");
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
@@ -46,15 +77,14 @@ public class HelloJobConfiguration {
     }
 
     @Bean
-    public Step helloStep2() {
-        return stepBuilderFactory.get("helloStep2")
+    public Step step3() {
+        return stepBuilderFactory.get("helloStep3")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
-                    System.out.println("HELLO SPRING BATCH 2");
+                    System.out.println("HELLO SPRING BATCH 3");
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
                 .build();
     }
-
 }
