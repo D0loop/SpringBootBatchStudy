@@ -2,8 +2,7 @@ package com.example.springbatch;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -11,6 +10,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.boot.autoconfigure.batch.BasicBatchConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,17 +28,14 @@ public class HelloJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-    private final ExecutionContextTasklet1 executionContextTasklet1;
-    private final ExecutionContextTasklet2 executionContextTasklet2;
-    private final ExecutionContextTasklet3 executionContextTasklet3;
-    private final ExecutionContextTasklet4 executionContextTasklet4;
+    private final JobExecutionListener jobExecutionListener;
 
     @Bean
     public Job helloJob() {
         return jobBuilderFactory.get("helloJob")
-                .start(step1())
-                .next(step2())
-                .next(step3())
+                .start(helloStep1())
+                .next(helloStep2())
+                .listener(jobExecutionListener)
                 .build();
     }
 
