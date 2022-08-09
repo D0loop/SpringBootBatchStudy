@@ -32,38 +32,34 @@ public class HelloJobConfiguration {
     private final ExecutionContextTasklet4 executionContextTasklet4;
 
     @Bean
-    public Job helloJob() {
-        return jobBuilderFactory.get("helloJob")
-//                .start(taskStep())
-                .start(chunkStep())
+    public Job job() {
+        return jobBuilderFactory.get("job")
+                .start(step1())
+                .next(step2())
                 .build();
     }
 
     @Bean
     public Step step1() {
         return stepBuilderFactory.get("step1")
-                .tasklet(executionContextTasklet1)
+                .tasklet((contribution, chunkContext) -> {
+                    System.out.println("====================");
+                    System.out.println("RUN SPRING BATCH 1");
+                    System.out.println("====================");
+                    return RepeatStatus.FINISHED;
+                })
                 .build();
     }
 
     @Bean
     public Step step2() {
         return stepBuilderFactory.get("step2")
-                .tasklet(executionContextTasklet2)
-                .build();
-    }
-
-    @Bean
-    public Step step3() {
-        return stepBuilderFactory.get("step3")
-                .tasklet(executionContextTasklet3)
-                .build();
-    }
-
-    @Bean
-    public Step step4() {
-        return stepBuilderFactory.get("step4")
-                .tasklet(executionContextTasklet4)
+                .tasklet((contribution, chunkContext) -> {
+                    System.out.println("====================");
+                    System.out.println("RUN SPRING BATCH 2");
+                    System.out.println("====================");
+                    return RepeatStatus.FINISHED;
+                })
                 .build();
     }
 }
