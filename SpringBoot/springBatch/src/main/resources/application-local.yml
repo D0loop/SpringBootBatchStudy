@@ -11,3 +11,5 @@ spring:
   batch:
     jdbc:
       initialize-schema: embedded
+    job:
+      enabled: false # 기본적으로 SpringBootBatch는 true로 설정되어 job을 자동수행한다.
