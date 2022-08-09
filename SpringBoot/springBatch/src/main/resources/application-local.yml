@@ -10,8 +10,7 @@ spring:
       driver-class-name: org.h2.Driver
   batch:
     jdbc:
-      initialize-schema: embedded # 스키마 생성 시점
-      table-prefix: SYSTEM_ # 쿼리 생성시 테이블 prefix
+      initialize-schema: always
     job:
       names: ${job.name:NONE} # --job.name=job1,job2 와 같이 외부에서 실행할 배치job을 인자로 전달
-      enabled: false # 스프링 배치 어플리케이션 실행시 job 자동 수행 block
+      enabled: true # 기본적으로 SpringBootBatch는 true로 설정되어 job을 자동수행한다.
