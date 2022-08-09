@@ -42,6 +42,7 @@ public class HelloJobConfiguration {
                     System.out.println("====================");
                     System.out.println("HELLO TASK STEP");
                     System.out.println("====================");
+                    Thread.sleep(3000);
                     return RepeatStatus.FINISHED;
                 })
                 .build();
