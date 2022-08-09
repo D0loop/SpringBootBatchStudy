@@ -26,6 +26,10 @@ public class HelloJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final ExecutionContextTasklet1 executionContextTasklet1;
+    private final ExecutionContextTasklet2 executionContextTasklet2;
+    private final ExecutionContextTasklet3 executionContextTasklet3;
+    private final ExecutionContextTasklet4 executionContextTasklet4;
 
     @Bean
     public Job helloJob() {
@@ -36,40 +40,30 @@ public class HelloJobConfiguration {
     }
 
     @Bean
-    public Step taskStep() {
-        return stepBuilderFactory.get("taskStep")
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("====================");
-                    System.out.println("HELLO TASK STEP");
-                    System.out.println("====================");
-                    Thread.sleep(3000);
-                    return RepeatStatus.FINISHED;
-                })
+    public Step step1() {
+        return stepBuilderFactory.get("step1")
+                .tasklet(executionContextTasklet1)
                 .build();
     }
 
     @Bean
-    public Step chunkStep() {
-        return stepBuilderFactory.get("chunkStep")
-                .<String, String> chunk(10)
-                .reader(new ListItemReader<>(Arrays.asList("item1", "item2", "item3", "item4", "item5")))
-                .processor(new ItemProcessor<String, String>() {
-                    @Override
-                    public String process(String s) throws Exception {
+    public Step step2() {
+        return stepBuilderFactory.get("step2")
+                .tasklet(executionContextTasklet2)
+                .build();
+    }
 
-                        System.out.println("====================");
-                        System.out.println("HELLO CHUNK STEP");
-                        System.out.println("====================");
+    @Bean
+    public Step step3() {
+        return stepBuilderFactory.get("step3")
+                .tasklet(executionContextTasklet3)
+                .build();
+    }
 
-                        return s.toUpperCase();
-                    }
-                })
-                .writer(new ItemWriter<String>() {
-                    @Override
-                    public void write(List<? extends String> list) throws Exception {
-                        list.forEach(System.out::println);
-                    }
-                })
+    @Bean
+    public Step step4() {
+        return stepBuilderFactory.get("step4")
+                .tasklet(executionContextTasklet4)
                 .build();
     }
 }
