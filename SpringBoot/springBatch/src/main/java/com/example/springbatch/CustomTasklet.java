@@ -17,11 +17,11 @@ public class CustomTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
 
-        System.out.println("====================");
-        System.out.println("HELLO SPRING BATCH 1");
-        System.out.println("====================");
+        String stepName = stepContribution.getStepExecution().getStepName();
+        String jobName = chunkContext.getStepContext().getJobName();
 
-        System.out.println("Step1 was executed by customTasklet");
+        System.out.println("stepName : " + stepName);
+        System.out.println("jobName : " + jobName);
 
         return RepeatStatus.FINISHED;
     }
