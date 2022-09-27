@@ -30,8 +30,8 @@ public class HelloJobConfiguration {
     @Bean
     public Job helloJob() {
         return jobBuilderFactory.get("helloJob")
-//                .start(taskStep())
-                .start(chunkStep())
+                .start(taskStep())
+                .next(chunkStep())
                 .build();
     }
 
@@ -44,6 +44,7 @@ public class HelloJobConfiguration {
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
+                .allowStartIfComplete(true)
                 .build();
     }
 
@@ -55,6 +56,8 @@ public class HelloJobConfiguration {
                 .processor(new ItemProcessor<String, String>() {
                     @Override
                     public String process(String s) throws Exception {
+
+                        if(s.equals("item1")) throw new RuntimeException("Step 2 was failed");
 
                         System.out.println("====================");
                         System.out.println("HELLO CHUNK STEP");
@@ -69,6 +72,7 @@ public class HelloJobConfiguration {
                         list.forEach(System.out::println);
                     }
                 })
+                .startLimit(3)
                 .build();
         
     }
