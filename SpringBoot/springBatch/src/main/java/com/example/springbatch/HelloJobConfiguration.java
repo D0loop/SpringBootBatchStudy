@@ -5,6 +5,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
@@ -36,8 +37,8 @@ public class HelloJobConfiguration {
     }
 
     @Bean
-    public Step taskStep() {
-        return stepBuilderFactory.get("taskStep")
+    public Step step1() {
+        return stepBuilderFactory.get("taskStep1")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("====================");
                     System.out.println("HELLO TASK STEP");
@@ -74,6 +75,5 @@ public class HelloJobConfiguration {
                 })
                 .startLimit(3)
                 .build();
-        
     }
 }
