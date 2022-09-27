@@ -31,9 +31,8 @@ public class HelloJobConfiguration {
     @Bean
     public Job helloJob() {
         return jobBuilderFactory.get("helloJob")
-                .incrementer(new RunIdIncrementer())
-                .start(step1())
-                .next(step2())
+                .start(taskStep())
+                .next(chunkStep())
                 .build();
     }
 
@@ -46,13 +45,35 @@ public class HelloJobConfiguration {
                     System.out.println("====================");
                     return RepeatStatus.FINISHED;
                 })
+                .allowStartIfComplete(true)
                 .build();
     }
 
     @Bean
-    public Step step2() {
-        return stepBuilderFactory.get("taskStep2")
-                .tasklet(new CustomTasklet())
+    public Step chunkStep() {
+        return stepBuilderFactory.get("chunkStep")
+                .<String, String> chunk(10)
+                .reader(new ListItemReader<>(Arrays.asList("item1", "item2", "item3", "item4", "item5")))
+                .processor(new ItemProcessor<String, String>() {
+                    @Override
+                    public String process(String s) throws Exception {
+
+                        if(s.equals("item1")) throw new RuntimeException("Step 2 was failed");
+
+                        System.out.println("====================");
+                        System.out.println("HELLO CHUNK STEP");
+                        System.out.println("====================");
+
+                        return s.toUpperCase();
+                    }
+                })
+                .writer(new ItemWriter<String>() {
+                    @Override
+                    public void write(List<? extends String> list) throws Exception {
+                        list.forEach(System.out::println);
+                    }
+                })
+                .startLimit(3)
                 .build();
     }
 }
