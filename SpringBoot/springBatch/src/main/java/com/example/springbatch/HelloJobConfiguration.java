@@ -1,8 +1,7 @@
 package com.example.springbatch;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -31,8 +30,20 @@ public class HelloJobConfiguration {
     @Bean
     public Job helloJob() {
         return jobBuilderFactory.get("helloJob")
-                .start(taskStep())
+                .incrementer(new RunIdIncrementer())
+                .start(step1())
                 .next(chunkStep())
+                .listener(new StepExecutionListener() {
+                    @Override
+                    public void beforeStep(StepExecution stepExecution) {
+
+                    }
+
+                    @Override
+                    public ExitStatus afterStep(StepExecution stepExecution) {
+                        return null;
+                    }
+                })
                 .build();
     }
 
